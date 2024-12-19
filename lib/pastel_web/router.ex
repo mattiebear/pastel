@@ -66,7 +66,8 @@ defmodule PastelWeb.Router do
       on_mount: [{PastelWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-      live "/", TaskLive, :index
+      live "/", TasksLive, :index
+      live "/tasks/new", TaskLive, :new
     end
   end
 
