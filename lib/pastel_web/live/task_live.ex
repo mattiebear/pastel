@@ -5,24 +5,35 @@ defmodule PastelWeb.TaskLive do
 
   def render(assigns) do
     ~H"""
-    <header class="px-6 py-12">
-      <div class="flex flex-row justify-between items-center gap-x-2">
-        <div class="basis-0 grow">
-          <.link
-            class="flex justify-center items-center bg-gray-200 size-10 rounded-full"
-            patch={~p"/"}
-          >
-            <.icon name="hero-chevron-left" class="size-6" />
-          </.link>
-        </div>
+    <section class="h-full flex flex-col">
+      <header class="px-6 py-12">
+        <div class="flex flex-row justify-between items-center gap-x-2">
+          <div class="basis-0 grow">
+            <.link
+              class="flex justify-center items-center bg-gray-200 size-10 rounded-full"
+              patch={~p"/"}
+            >
+              <.icon name="hero-chevron-left" class="size-6" />
+            </.link>
+          </div>
 
-        <div>
-          <p class="text-lg font-semibold">Create task</p>
-        </div>
+          <div>
+            <p class="text-lg font-semibold">Create task</p>
+          </div>
 
-        <div class="basis-0 grow"></div>
-      </div>
-    </header>
+          <div class="basis-0 grow"></div>
+        </div>
+      </header>
+
+      <main class="grow overflow-y-auto"></main>
+
+      <footer class="p-4 bg-white">
+        <button class="bg-indigo-950 p-4 rounded-full w-full text-white flex justify-center items-center gap-x-2">
+          <span class="text-lg">Create task</span>
+          <.icon name="hero-plus" class="size-5" />
+        </button>
+      </footer>
+    </section>
     """
   end
 
