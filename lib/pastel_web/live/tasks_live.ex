@@ -3,8 +3,8 @@ defmodule PastelWeb.TasksLive do
 
   def render(assigns) do
     ~H"""
-    <section class="h-full flex flex-col bg-gradient-to-b from-white to-gray-100">
-      <header class="px-6 py-12">
+    <div class="h-full flex flex-col bg-gradient-to-b from-white to-gray-100">
+      <header class="px-6 pt-12 pb-4">
         <div class="flex flex-row items-center gap-x-2">
           <div class="size-10 rounded-full overflow-hidden">
             <img src="https://i.pravatar.cc/300?u=a042581f4e29026704d" alt="The avatar for the user" />
@@ -59,7 +59,7 @@ defmodule PastelWeb.TasksLive do
           </button>
         </nav>
       </footer>
-    </section>
+    </div>
     """
   end
 end

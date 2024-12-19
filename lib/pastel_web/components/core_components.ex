@@ -272,6 +272,7 @@ defmodule PastelWeb.CoreComponents do
   attr :name, :any
   attr :label, :string, default: nil
   attr :value, :any
+  attr :icon, :string, default: nil
 
   attr :type, :string,
     default: "text",
@@ -355,8 +356,8 @@ defmodule PastelWeb.CoreComponents do
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
+          "mt-2 block w-full rounded-xl text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem] bg-gray-100 px-4 py-2",
+          @errors == [] && "border-none",
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
         {@rest}
@@ -371,18 +372,24 @@ defmodule PastelWeb.CoreComponents do
     ~H"""
     <div>
       <.label for={@id}>{@label}</.label>
-      <input
-        type={@type}
-        name={@name}
-        id={@id}
-        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-        class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
-        ]}
-        {@rest}
-      />
+      <div class="relative">
+        <input
+          type={@type}
+          name={@name}
+          id={@id}
+          value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+          class={[
+            "mt-2 block w-full rounded-xl text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 bg-gray-100 px-4 py-2",
+            @errors == [] && "border-none",
+            @errors != [] && "border-rose-400 focus:border-rose-400",
+            @icon && "pl-10"
+          ]}
+          {@rest}
+        />
+        <div :if={@icon} class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <.icon name={@icon} class="size-5 text-zinc-500" />
+        </div>
+      </div>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -396,7 +403,7 @@ defmodule PastelWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="block text-sm font-bold leading-6 text-zinc-800">
       {render_slot(@inner_block)}
     </label>
     """

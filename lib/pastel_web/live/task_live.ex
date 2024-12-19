@@ -1,12 +1,13 @@
 defmodule PastelWeb.TaskLive do
   use PastelWeb, :live_view
 
+  alias Pastel.Todo
   alias Pastel.Todo.Task
 
   def render(assigns) do
     ~H"""
-    <section class="h-full flex flex-col">
-      <header class="px-6 py-12">
+    <div class="h-full flex flex-col">
+      <header class="px-6 pt-12 pb-4">
         <div class="flex flex-row justify-between items-center gap-x-2">
           <div class="basis-0 grow">
             <.link
@@ -25,7 +26,23 @@ defmodule PastelWeb.TaskLive do
         </div>
       </header>
 
-      <main class="grow overflow-y-auto"></main>
+      <main class="grow overflow-y-auto p-4">
+        <.form for={@form} phx-submit="save" class="flex flex-col gap-y-4">
+          <.input
+            type="text"
+            field={@form[:name]}
+            label="Task name"
+            placeholder="Enter task title"
+            icon="hero-clipboard"
+          />
+          <.input
+            type="textarea"
+            field={@form[:description]}
+            label="Task description"
+            placeholder="Enter task description"
+          />
+        </.form>
+      </main>
 
       <footer class="p-4 bg-white">
         <button class="bg-indigo-950 p-4 rounded-full w-full text-white flex justify-center items-center gap-x-2">
@@ -33,17 +50,13 @@ defmodule PastelWeb.TaskLive do
           <.icon name="hero-plus" class="size-5" />
         </button>
       </footer>
-    </section>
+    </div>
     """
-  end
-
-  def mount(_params, _session, socket) do
-    {:ok, socket}
   end
 
   def handle_params(_params, _uri, socket) do
     task = %Task{}
-    changeset = Task.changeset(task, %{})
+    changeset = Todo.change_task(task)
 
     socket =
       socket
@@ -53,7 +66,7 @@ defmodule PastelWeb.TaskLive do
     {:noreply, socket}
   end
 
-  defp assign_form(socket, changeset) do
-    assign(socket, form: to_form(changeset))
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 end
