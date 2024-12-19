@@ -22,6 +22,34 @@
   {@inner_content}
 </main>
 
-<footer>
-  <nav></nav>
+<footer class="p-2 bg-white">
+  <div class="flex flex-row justify-center items-center relative">
+    <button class="size-12 rounded-full bg-indigo-950 absolute -bottom-3">
+      <.icon name="hero-plus" class="size-6 text-white" />
+    </button>
+  </div>
+
+  <nav class="flex flex-row justify-between">
+    <button class="flex flex-col items-center gap-y-1 p-2 basis-20">
+      <.icon name="hero-home" class="size-6" />
+      <span class="text-xs">Home</span>
+    </button>
+
+    <button class="flex flex-col items-center gap-y-1 p-2 basis-20">
+      <.icon name="hero-check-circle" class="size-6" />
+      <span class="text-xs">Tasks</span>
+    </button>
+
+    <div></div>
+
+    <button class="flex flex-col items-center gap-y-1 p-2 basis-20">
+      <.icon name="hero-chat-bubble-oval-left" class="size-6" />
+      <span class="text-xs">Messages</span>
+    </button>
+
+    <button class="flex flex-col items-center gap-y-1 p-2 basis-20">
+      <.icon name="hero-user-circle" class="size-6" />
+      <span class="text-xs">Account</span>
+    </button>
+  </nav>
 </footer>
