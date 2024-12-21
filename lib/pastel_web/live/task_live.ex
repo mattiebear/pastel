@@ -61,7 +61,7 @@ defmodule PastelWeb.TaskLive do
               <label
                 for="due_today"
                 class={[
-                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full",
+                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
                   @form[:relative_due_date].value == "today" && "bg-rose-400 text-white"
                 ]}
                 ]}
@@ -74,13 +74,13 @@ defmodule PastelWeb.TaskLive do
                   class="hidden"
                   checked={@form[:relative_due_date].value == "today"}
                 />
-                <span class="whitespace-nowrap font-semibold">Today</span>
+                <span class="whitespace-nowrap font-semibold transition-colors">Today</span>
               </label>
 
               <label
                 for="due_week"
                 class={[
-                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full",
+                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
                   @form[:relative_due_date].value == "this_week" && "bg-rose-400 text-white"
                 ]}
               >
@@ -92,13 +92,13 @@ defmodule PastelWeb.TaskLive do
                   class="hidden"
                   checked={@form[:relative_due_date].value == "this_week"}
                 />
-                <span class="whitespace-nowrap font-semibold">This week</span>
+                <span class="whitespace-nowrap font-semibold transition-colors">This week</span>
               </label>
 
               <label
                 for="due_later"
                 class={[
-                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full",
+                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
                   @form[:relative_due_date].value == "later" && "bg-rose-400 text-white"
                 ]}
               >
@@ -110,7 +110,7 @@ defmodule PastelWeb.TaskLive do
                   class="hidden"
                   checked={@form[:relative_due_date].value == "later"}
                 />
-                <span class="whitespace-nowrap font-semibold">Later</span>
+                <span class="whitespace-nowrap font-semibold transition-colors">Later</span>
               </label>
             </fieldset>
           </div>
@@ -152,11 +152,13 @@ defmodule PastelWeb.TaskLive do
 
   # TODO: Save the task
   def handle_event("save", %{"task" => task_params}, socket) do
-    changeset =
-      Todo.change_task(socket.assigns.task, task_params)
-      |> Map.put(:action, :validate)
+    case Todo.create_task(socket.assigns.current_user, task_params) do
+      {:ok, _task} ->
+        {:noreply, redirect(socket, to: "/")}
 
-    {:noreply, assign_form(socket, changeset)}
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
