@@ -27,25 +27,101 @@ defmodule PastelWeb.TaskLive do
       </header>
 
       <main class="grow overflow-y-auto p-4">
-        <.form for={@form} phx-submit="save" class="flex flex-col gap-y-4">
+        <.form
+          for={@form}
+          phx-change="validate"
+          phx-submit="save"
+          id="task_form"
+          class="flex flex-col gap-y-4"
+        >
           <.input
             type="text"
             field={@form[:name]}
             label="Task name"
             placeholder="Enter task title"
             icon="hero-clipboard"
+            phx-debounce="blur"
           />
+
+          <% # FIXME: get auto resize this to work %>
+
           <.input
             type="textarea"
             field={@form[:description]}
             label="Task description"
             placeholder="Enter task description"
+            phx-hook="AutoResizeTextarea"
+            phx-debounce="blur"
           />
+
+          <div class="flex flex-row items-center">
+            <.label>Due date</.label>
+
+            <fieldset class="flex flex-row items-center px-6 gap-x-2">
+              <label
+                for="due_today"
+                class={[
+                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full",
+                  @form[:relative_due_date].value == "today" && "bg-rose-400 text-white"
+                ]}
+                ]}
+              >
+                <input
+                  id="due_today"
+                  type="radio"
+                  name="task[relative_due_date]"
+                  value="today"
+                  class="hidden"
+                  checked={@form[:relative_due_date].value == "today"}
+                />
+                <span class="whitespace-nowrap font-semibold">Today</span>
+              </label>
+
+              <label
+                for="due_week"
+                class={[
+                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full",
+                  @form[:relative_due_date].value == "this_week" && "bg-rose-400 text-white"
+                ]}
+              >
+                <input
+                  id="due_week"
+                  type="radio"
+                  name="task[relative_due_date]"
+                  value="this_week"
+                  class="hidden"
+                  checked={@form[:relative_due_date].value == "this_week"}
+                />
+                <span class="whitespace-nowrap font-semibold">This week</span>
+              </label>
+
+              <label
+                for="due_later"
+                class={[
+                  "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full",
+                  @form[:relative_due_date].value == "later" && "bg-rose-400 text-white"
+                ]}
+              >
+                <input
+                  id="due_later"
+                  type="radio"
+                  name="task[relative_due_date]"
+                  value="later"
+                  class="hidden"
+                  checked={@form[:relative_due_date].value == "later"}
+                />
+                <span class="whitespace-nowrap font-semibold">Later</span>
+              </label>
+            </fieldset>
+          </div>
         </.form>
       </main>
 
       <footer class="p-4 bg-white">
-        <button class="bg-indigo-950 p-4 rounded-full w-full text-white flex justify-center items-center gap-x-2">
+        <button
+          class="bg-indigo-950 p-4 rounded-full w-full text-white flex justify-center items-center gap-x-2"
+          phx-click={JS.dispatch("submit", to: "#task_form")}
+        >
           <span class="text-lg">Create task</span>
           <.icon name="hero-plus" class="size-5" />
         </button>
@@ -64,6 +140,23 @@ defmodule PastelWeb.TaskLive do
       |> assign_form(changeset)
 
     {:noreply, socket}
+  end
+
+  def handle_event("validate", %{"task" => task_params}, socket) do
+    changeset =
+      Todo.change_task(socket.assigns.task, task_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_form(socket, changeset)}
+  end
+
+  # TODO: Save the task
+  def handle_event("save", %{"task" => task_params}, socket) do
+    changeset =
+      Todo.change_task(socket.assigns.task, task_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_form(socket, changeset)}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
