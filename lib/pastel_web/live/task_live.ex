@@ -114,6 +114,7 @@ defmodule PastelWeb.TaskLive do
               </label>
             </fieldset>
           </div>
+          <.button type="button" phx-click={open_drawer("task_drawer")}>Open drawer</.button>
         </.form>
       </main>
 
@@ -127,6 +128,10 @@ defmodule PastelWeb.TaskLive do
         </button>
       </footer>
     </div>
+
+    <.drawer id="task_drawer">
+      The drawer
+    </.drawer>
     """
   end
 

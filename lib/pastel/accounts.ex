@@ -81,10 +81,14 @@ defmodule Pastel.Accounts do
     |> Repo.insert()
   end
 
+  @doc """
+  Registers a user and sets up the user list.
+  """
+
   def register_and_setup_user(attrs) do
     case register_user(attrs) do
       {:ok, user} ->
-        Todo.init_user_list(user)
+        Todo.init_user_list!(user)
         {:ok, user}
 
       {:error, changeset} ->

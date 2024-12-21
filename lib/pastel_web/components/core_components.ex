@@ -90,6 +90,29 @@ defmodule PastelWeb.CoreComponents do
   end
 
   @doc """
+  Renders a drawer that slides in from the bottom.
+  """
+
+  attr :id, :string, required: true
+  attr :on_cancel, JS, default: %JS{}
+  slot :inner_block, required: true
+
+  def drawer(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      class="absolute hidden bg-red-200 h-[60vh] top-[40vh] w-screen"
+      phx-click-away={}
+      phx-remove={close_drawer(@id)}
+      phx-click-away={close_drawer(@id)}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
   Renders flash notices.
 
   ## Examples
@@ -651,6 +674,24 @@ defmodule PastelWeb.CoreComponents do
     |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
     |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.pop_focus()
+  end
+
+  def open_drawer(js \\ %JS{}, id) do
+    js
+    |> JS.show(
+      to: "##{id}",
+      time: 500,
+      transition: {"transition-all ease-out duration-500", "top-full", ""}
+    )
+  end
+
+  def close_drawer(js \\ %JS{}, id) do
+    js
+    |> JS.hide(
+      to: "##{id}",
+      time: 300,
+      transition: {"transition-all ease-in duration-300", "", "top-full"}
+    )
   end
 
   @doc """
