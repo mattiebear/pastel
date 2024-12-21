@@ -5,6 +5,7 @@ defmodule Pastel.Accounts do
 
   import Ecto.Query, warn: false
   alias Pastel.Repo
+  alias Pastel.Todo
 
   alias Pastel.Accounts.{User, UserToken, UserNotifier}
 
@@ -78,6 +79,17 @@ defmodule Pastel.Accounts do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  def register_and_setup_user(attrs) do
+    case register_user(attrs) do
+      {:ok, user} ->
+        Todo.init_user_list(user)
+        {:ok, user}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """

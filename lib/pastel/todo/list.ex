@@ -4,6 +4,7 @@ defmodule Pastel.Todo.List do
 
   schema "lists" do
     field :name, :string
+    field :type, Ecto.Enum, values: [private: 0, shared: 1], default: :private
 
     has_many :list_users, Pastel.Todo.ListUser
     has_many :users, through: [:list_users, :user]
