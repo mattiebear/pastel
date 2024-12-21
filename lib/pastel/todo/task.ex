@@ -6,11 +6,15 @@ defmodule Pastel.Todo.Task do
     field :name, :string
     field :description, :string
     field :completed_at, :utc_datetime
-    field :due_date, :date
+    field :due_at, :utc_datetime
 
+    # While building the schema store the relative time (ex. Tomorrow) as a
+    # faster way to set the due date. This will be converted to a real datetime
+    # when the task is saved.
     field :relative_due_date, :string, virtual: true
 
-    belongs_to :user, Pastel.Accounts.User
+    belongs_to :list, Pastel.Todo.List
+    belongs_to :creator, Pastel.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
