@@ -23,26 +23,29 @@ import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
 let Hooks = {
-	AutoResizeTextarea: {
-		mounted() {
-			this.el.style.height = this.el.scrollHeight + "px";
-			this.el.style.overflowY = "hidden";
+  AutoResizeTextarea: {
+    mounted() {
+      this.el.style.height = this.el.scrollHeight + "px";
+      this.el.style.overflowY = "hidden";
 
-			this.el.addEventListener("input", (e) => {
-				e.target.height = "auto";
-				e.target.height = e.target.scrollHeight + "px";
-			});
-		},
-	},
+      this.el.addEventListener("input", (e) => {
+        e.target.height = "auto";
+        e.target.height = e.target.scrollHeight + "px";
+      });
+    },
+  },
 };
 
+let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 let csrfToken = document
-	.querySelector("meta[name='csrf-token']")
-	.getAttribute("content");
+  .querySelector("meta[name='csrf-token']")
+  .getAttribute("content");
+
 let liveSocket = new LiveSocket("/live", Socket, {
-	hooks: Hooks,
-	longPollFallbackMs: 2500,
-	params: { _csrf_token: csrfToken },
+  hooks: Hooks,
+  longPollFallbackMs: 2500,
+  params: { _csrf_token: csrfToken, time_zone: timeZone },
 });
 
 // Show progress bar on live navigation and form submits

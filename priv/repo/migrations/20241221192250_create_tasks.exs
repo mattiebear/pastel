@@ -6,7 +6,7 @@ defmodule Pastel.Repo.Migrations.CreateTasks do
       add :name, :string, null: false
       add :description, :text
       add :completed_at, :utc_datetime
-      add :due_at, :utc_datetime
+      add :due_on, :date
       add :important, :boolean, default: false
 
       add :creator_id, references(:users, on_delete: :delete_all)

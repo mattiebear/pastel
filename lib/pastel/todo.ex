@@ -12,8 +12,7 @@ defmodule Pastel.Todo do
 
   def create_task(%User{} = user, attrs \\ %{}) do
     %Task{}
-    |> Task.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Task.create_changeset(attrs, user)
     |> Repo.insert()
   end
 
@@ -21,7 +20,7 @@ defmodule Pastel.Todo do
     Changeset.change(%ListUser{})
     |> Changeset.put_change(:role, :owner)
     |> Changeset.put_assoc(:user, user)
-    |> Changeset.put_assoc(:list, %List{name: "My List", type: :private})
+    |> Changeset.put_assoc(:list, %List{name: "My Personal Tasks", type: :private})
     |> Repo.insert!()
   end
 

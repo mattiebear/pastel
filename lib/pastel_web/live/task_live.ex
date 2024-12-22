@@ -70,17 +70,16 @@ defmodule PastelWeb.TaskLive do
                 for="due_today"
                 class={[
                   "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
-                  @form[:relative_due_date].value == "today" && "bg-rose-400 text-white"
-                ]}
+                  @form[:relative_due_on].value == "today" && "bg-rose-400 text-white"
                 ]}
               >
                 <input
                   id="due_today"
                   type="radio"
-                  name={@form[:relative_due_date].name}
+                  name={@form[:relative_due_on].name}
                   value="today"
                   class="hidden"
-                  checked={@form[:relative_due_date].value == "today"}
+                  checked={@form[:relative_due_on].value == "today"}
                 />
                 <span class="whitespace-nowrap font-semibold transition-colors">Today</span>
               </label>
@@ -89,16 +88,16 @@ defmodule PastelWeb.TaskLive do
                 for="due_week"
                 class={[
                   "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
-                  @form[:relative_due_date].value == "this_week" && "bg-rose-400 text-white"
+                  @form[:relative_due_on].value == "this_week" && "bg-rose-400 text-white"
                 ]}
               >
                 <input
                   id="due_week"
                   type="radio"
-                  name="task[relative_due_date]"
+                  name="task[relative_due_on]"
                   value="this_week"
                   class="hidden"
-                  checked={@form[:relative_due_date].value == "this_week"}
+                  checked={@form[:relative_due_on].value == "this_week"}
                 />
                 <span class="whitespace-nowrap font-semibold transition-colors">This week</span>
               </label>
@@ -107,16 +106,16 @@ defmodule PastelWeb.TaskLive do
                 for="due_later"
                 class={[
                   "cursor-pointer px-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
-                  @form[:relative_due_date].value == "later" && "bg-rose-400 text-white"
+                  @form[:relative_due_on].value == "later" && "bg-rose-400 text-white"
                 ]}
               >
                 <input
                   id="due_later"
                   type="radio"
-                  name={@form[:relative_due_date].name}
+                  name={@form[:relative_due_on].name}
                   value="later"
                   class="hidden"
-                  checked={@form[:relative_due_date].value == "later"}
+                  checked={@form[:relative_due_on].value == "later"}
                 />
                 <span class="whitespace-nowrap font-semibold transition-colors">Later</span>
               </label>
@@ -132,8 +131,9 @@ defmodule PastelWeb.TaskLive do
               <label
                 for="important"
                 class={[
-                  "cursor-pointer pl-3 pr-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
-                  checked && "bg-blue-400 text-white"
+                  "cursor-pointer pl-3 pr-4 py-1.5 text-sm rounded-full transition-colors",
+                  checked && "bg-blue-400 text-white",
+                  !checked && "bg-gray-200"
                 ]}
               >
                 <input
@@ -187,7 +187,6 @@ defmodule PastelWeb.TaskLive do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  # TODO: Save the task
   def handle_event("save", %{"task" => task_params}, socket) do
     case Todo.create_task(socket.assigns.current_user, task_params) do
       {:ok, _task} ->

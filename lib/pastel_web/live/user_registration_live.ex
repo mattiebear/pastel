@@ -31,6 +31,7 @@ defmodule PastelWeb.UserRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
+        <input type="hidden" name={@form[:time_zone].name} value={@time_zone} />
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:password]} type="password" label="Password" required />
 
@@ -43,11 +44,12 @@ defmodule PastelWeb.UserRegistrationLive do
   end
 
   def mount(_params, _session, socket) do
+    time_zone = get_connect_params(socket)["time_zone"]
     changeset = Accounts.change_user_registration(%User{})
 
     socket =
       socket
-      |> assign(trigger_submit: false, check_errors: false)
+      |> assign(trigger_submit: false, check_errors: false, time_zone: time_zone)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}

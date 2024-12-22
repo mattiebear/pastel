@@ -8,6 +8,7 @@ defmodule Pastel.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+    field :time_zone, :string, default: "Etc/UTC"
 
     timestamps(type: :utc_datetime)
   end
@@ -37,7 +38,8 @@ defmodule Pastel.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    # TODO: Validate time_zone
+    |> cast(attrs, [:email, :password, :time_zone])
     |> validate_email(opts)
     |> validate_password(opts)
   end
