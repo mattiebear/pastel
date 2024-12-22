@@ -101,8 +101,11 @@ defmodule PastelWeb.CoreComponents do
     ~H"""
     <div
       id={@id}
-      class="absolute hidden bg-red-200 h-[60vh] top-[40vh] w-screen"
-      phx-click-away={}
+      class={[
+        "absolute hidden bg-red-200 h-[60vh] top-[40vh] w-screen",
+        "rounded-t-3xl p-4 shadow-t-lg bg-gradient-to-b from-white to-gray-100",
+        "overflow-y-auto"
+      ]}
       phx-remove={close_drawer(@id)}
       phx-click-away={close_drawer(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
@@ -359,7 +362,11 @@ defmodule PastelWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class={[
+          "mt-2 block w-full rounded-xl border-none bg-gray-100",
+          "shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm",
+          "cursor-pointer"
+        ]}
         multiple={@multiple}
         {@rest}
       >

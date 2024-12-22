@@ -1,4 +1,6 @@
 defmodule Pastel.Todo do
+  import Ecto.Query
+
   alias Ecto.Changeset
   alias Pastel.Repo
   alias Pastel.Accounts.User
@@ -21,5 +23,11 @@ defmodule Pastel.Todo do
     |> Changeset.put_assoc(:user, user)
     |> Changeset.put_assoc(:list, %List{name: "My List", type: :private})
     |> Repo.insert!()
+  end
+
+  def list_lists(%User{} = user) do
+    Repo.all(
+      from l in List, join: lu in ListUser, on: lu.list_id == l.id, where: lu.user_id == ^user.id
+    )
   end
 end

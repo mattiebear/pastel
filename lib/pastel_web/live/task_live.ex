@@ -54,6 +54,14 @@ defmodule PastelWeb.TaskLive do
             phx-debounce="blur"
           />
 
+          <.input
+            type="select"
+            field={@form[:list_id]}
+            label="List"
+            options={@list_options}
+            placeholder="Select the list"
+          />
+
           <div class="flex flex-row items-center">
             <.label>Due date</.label>
 
@@ -69,7 +77,7 @@ defmodule PastelWeb.TaskLive do
                 <input
                   id="due_today"
                   type="radio"
-                  name="task[relative_due_date]"
+                  name={@form[:relative_due_date].name}
                   value="today"
                   class="hidden"
                   checked={@form[:relative_due_date].value == "today"}
@@ -105,7 +113,7 @@ defmodule PastelWeb.TaskLive do
                 <input
                   id="due_later"
                   type="radio"
-                  name="task[relative_due_date]"
+                  name={@form[:relative_due_date].name}
                   value="later"
                   class="hidden"
                   checked={@form[:relative_due_date].value == "later"}
@@ -114,7 +122,34 @@ defmodule PastelWeb.TaskLive do
               </label>
             </fieldset>
           </div>
-          <.button type="button" phx-click={open_drawer("task_drawer")}>Open drawer</.button>
+
+          <div class="flex flex-row items-center">
+            <.label>Marks</.label>
+            <% checked = Phoenix.HTML.Form.normalize_value("checkbox", @form[:important].value) %>
+
+            <fieldset class="flex flex-row items-center px-6 gap-x-2">
+              <input type="hidden" name={@form[:important].name} value="false" />
+              <label
+                for="important"
+                class={[
+                  "cursor-pointer pl-3 pr-4 py-1.5 text-sm bg-gray-200 rounded-full transition-colors",
+                  checked && "bg-blue-400 text-white"
+                ]}
+              >
+                <input
+                  id="important"
+                  type="checkbox"
+                  name={@form[:important].name}
+                  value="true"
+                  checked={checked}
+                  class="hidden"
+                />
+                <span class="whitespace-nowrap font-semibold transition-colors">
+                  <.icon class="size-4" name="hero-check-circle" /> Important
+                </span>
+              </label>
+            </fieldset>
+          </div>
         </.form>
       </main>
 
@@ -128,21 +163,18 @@ defmodule PastelWeb.TaskLive do
         </button>
       </footer>
     </div>
-
-    <.drawer id="task_drawer">
-      The drawer
-    </.drawer>
     """
   end
 
   def handle_params(_params, _uri, socket) do
-    task = %Task{}
-    changeset = Todo.change_task(task)
+    lists = Todo.list_lists(socket.assigns.current_user)
+    task = %Task{list_id: lists |> List.first() |> Map.get(:id)}
+    list_options = lists |> Enum.map(&{&1.name, &1.id})
 
     socket =
       socket
-      |> assign(:task, task)
-      |> assign_form(changeset)
+      |> assign(lists: lists, task: task, list_options: list_options)
+      |> assign_form(Todo.change_task(task))
 
     {:noreply, socket}
   end
