@@ -190,7 +190,12 @@ defmodule PastelWeb.TaskLive do
   def handle_event("save", %{"task" => task_params}, socket) do
     case Todo.create_task(socket.assigns.current_user, task_params) do
       {:ok, _task} ->
-        {:noreply, redirect(socket, to: "/")}
+        socket =
+          socket
+          |> put_flash(:info, "Task added!")
+          |> redirect(to: "/")
+
+        {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
