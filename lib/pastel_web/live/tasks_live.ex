@@ -1,6 +1,8 @@
 defmodule PastelWeb.TasksLive do
   use PastelWeb, :live_view
 
+  alias Pastel.Todo
+
   def render(assigns) do
     ~H"""
     <div class="h-full flex flex-col bg-gradient-to-b from-white to-gray-100">
@@ -23,7 +25,19 @@ defmodule PastelWeb.TasksLive do
         </div>
       </header>
 
-      <main class="grow overflow-y-auto"></main>
+      <main class="grow overflow-y-auto">
+        <div class="flex flex-col gap-y-4 px-4 pb-8 pt-4">
+          <div :for={task <- @tasks} class="rounded-xl p-3 bg-blue-200">
+            <h2 class="text-xl font-semibold mb-8">{task.name}</h2>
+            <div class="flex flex-row">
+              <div class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25">
+                <.icon class="size-4 mr-3" name="hero-calendar" />
+                <span class="text-sm">{PastelWeb.Date.format_short(task.due_on)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
 
       <footer class="p-4 bg-white">
         <div class="flex flex-row justify-center items-center relative">
@@ -61,5 +75,10 @@ defmodule PastelWeb.TasksLive do
       </footer>
     </div>
     """
+  end
+
+  def mount(_params, _session, socket) do
+    tasks = Todo.list_tasks(socket.assigns.current_user)
+    {:ok, assign(socket, tasks: tasks)}
   end
 end

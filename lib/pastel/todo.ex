@@ -16,6 +16,17 @@ defmodule Pastel.Todo do
     |> Repo.insert()
   end
 
+  def list_tasks(%User{} = user) do
+    Repo.all(
+      from t in Task,
+        join: l in List,
+        on: t.list_id == l.id,
+        join: lu in ListUser,
+        on: lu.list_id == l.id,
+        where: lu.user_id == ^user.id
+    )
+  end
+
   def init_user_list!(%User{} = user) do
     Changeset.change(%ListUser{})
     |> Changeset.put_change(:role, :owner)
