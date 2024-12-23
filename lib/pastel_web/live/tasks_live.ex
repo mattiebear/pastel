@@ -25,8 +25,37 @@ defmodule PastelWeb.TasksLive do
         </div>
       </header>
 
-      <main class="grow overflow-y-auto">
-        <div class="flex flex-col gap-y-4 px-4 pb-8 pt-4">
+      <main class="grow overflow-y-auto px-4 pb-8 pt-4">
+        <div class="flex flex-row gap-x-2 mb-4">
+          <button class={[
+            "pl-4 pr-3 py-1.5 text-sm rounded-full transition-colors bg-gray-200 flex flex-row",
+            "after:content-['2'] after:size-5 after:bg-gray-300 after:rounded-full after:block after:ml-1"
+          ]}>
+            Today
+          </button>
+
+          <button class={[
+            "pl-4 pr-3 py-1.5 text-sm rounded-full transition-colors bg-gray-200 flex flex-row",
+            "after:content-['5'] after:size-5 after:bg-gray-300 after:rounded-full after:block after:ml-1"
+          ]}>
+            Important
+          </button>
+
+          <button class={[
+            "pl-4 pr-3 py-1.5 text-sm rounded-full transition-colors bg-gray-200 flex flex-row",
+            "after:content-['1'] after:size-5 after:bg-gray-300 after:rounded-full after:block after:ml-1"
+          ]}>
+            Asks
+          </button>
+        </div>
+
+        <div class="mb-4">
+          <h2 class="text-lg font-bold">
+            {ngettext("One task", "%{count} tasks", length(@tasks))}
+          </h2>
+        </div>
+
+        <div class="flex flex-col gap-y-4">
           <div :for={task <- @tasks} class="rounded-xl p-3 bg-blue-200">
             <h2 class="text-xl font-semibold mb-8">{task.name}</h2>
             <div class="flex flex-row">
