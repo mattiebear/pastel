@@ -57,11 +57,38 @@ defmodule PastelWeb.TasksLive do
 
         <div class="flex flex-col gap-y-4">
           <div :for={task <- @tasks} class="rounded-xl p-3 bg-blue-200">
-            <h2 class="text-xl font-semibold mb-8">{task.name}</h2>
-            <div class="flex flex-row">
-              <div class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25">
-                <.icon class="size-4 mr-3" name="hero-calendar" />
-                <span class="text-sm">{PastelWeb.Date.format_short(task.due_on)}</span>
+            <button class="w-full" phx-click={toggle_task_actions(task.id)}>
+              <h2 class="text-xl font-semibold mb-8 text-left">{task.name}</h2>
+              <div class="flex flex-row gap-x-2">
+                <div class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25">
+                  <.icon class="size-4 mr-3" name="hero-calendar" />
+                  <span class="text-sm">{PastelWeb.Date.format_short(task.due_on)}</span>
+                </div>
+
+                <% # FIXME: Important isn't working %>
+                <div
+                  :if={task.important}
+                  class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-blue-400 text-white"
+                >
+                  <.icon class="size-4 mr-3" name="hero-check-circle" />
+                  <span class="text-sm">{PastelWeb.Date.format_short(task.due_on)}</span>
+                </div>
+              </div>
+            </button>
+
+            <div id={"task-actions-#{task.id}"} class="hidden overflow-hidden mt-3">
+              <div class="flex flex-row gap-x-2">
+                <button class="size-8 rounded-full bg-blue-300">
+                  <.icon name="hero-check" class="size-4" />
+                </button>
+
+                <button class="size-8 rounded-full bg-blue-300">
+                  <.icon name="hero-paper-airplane" class="size-4" />
+                </button>
+
+                <button class="size-8 rounded-full bg-blue-300">
+                  <.icon name="hero-calendar" class="size-4" />
+                </button>
               </div>
             </div>
           </div>
@@ -109,5 +136,14 @@ defmodule PastelWeb.TasksLive do
   def mount(_params, _session, socket) do
     tasks = Todo.list_tasks(socket.assigns.current_user)
     {:ok, assign(socket, tasks: tasks)}
+  end
+
+  defp toggle_task_actions(js \\ %JS{}, id) do
+    # FIXME: Fix this
+    JS.toggle(js,
+      to: "#task-actions-#{id}",
+      in: {"transition-all ease-in-out duration-300", "opacity-0 h-0", "opacity-100 h-auto"},
+      out: {"transition-all ease-in-out duration-300", "opacity-100 h-auto", "opacity-0 h-0"}
+    )
   end
 end
