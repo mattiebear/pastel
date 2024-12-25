@@ -56,9 +56,21 @@ defmodule PastelWeb.TasksLive do
         </div>
 
         <div class="flex flex-col gap-y-4">
-          <div :for={task <- @tasks} class="rounded-xl p-3 bg-blue-200">
+          <div
+            :for={task <- @tasks}
+            class={[
+              "rounded-xl p-3",
+              !task.completed_at && "bg-blue-200 text-gray-900",
+              task.completed_at && "bg-gray-200 text-gray-400"
+            ]}
+          >
             <button class="w-full" phx-click={toggle_task_actions(task.id)}>
-              <h2 class="text-xl font-semibold mb-8 text-left">{task.name}</h2>
+              <h2 class={[
+                "text-xl font-semibold mb-8 text-left",
+                task.completed_at && "line-through"
+              ]}>
+                {task.name}
+              </h2>
               <div class="flex flex-row gap-x-2">
                 <div class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25">
                   <.icon class="size-4 mr-3" name="hero-calendar" />
@@ -77,17 +89,21 @@ defmodule PastelWeb.TasksLive do
             </button>
 
             <div id={"task-actions-#{task.id}"} class="hidden overflow-hidden mt-3">
-              <div class="flex flex-row gap-x-2">
-                <button class="size-8 rounded-full bg-blue-300">
-                  <.icon name="hero-check" class="size-4" />
-                </button>
-
-                <button class="size-8 rounded-full bg-blue-300">
+              <div class="flex flex-row justify-end gap-x-2">
+                <%!-- <button class="size-8 rounded-full bg-blue-300">
                   <.icon name="hero-paper-airplane" class="size-4" />
                 </button>
 
                 <button class="size-8 rounded-full bg-blue-300">
                   <.icon name="hero-calendar" class="size-4" />
+                </button> --%>
+
+                <button
+                  class="size-8 rounded-full bg-blue-300"
+                  phx-click="complete_task"
+                  phx-value-id={task.id}
+                >
+                  <.icon name="hero-check" class="size-4" />
                 </button>
               </div>
             </div>
@@ -138,8 +154,16 @@ defmodule PastelWeb.TasksLive do
     {:ok, assign(socket, tasks: tasks)}
   end
 
+  def handle_event("complete_task", %{"id" => id}, socket) do
+    task = Todo.get_task!(socket.assigns.current_user, id)
+    # TODO: Refactor to send() an event to self() or use a stream for all of this
+    _task = Todo.complete_task!(task)
+    tasks = Todo.list_tasks(socket.assigns.current_user)
+    {:noreply, assign(socket, tasks: tasks)}
+  end
+
   defp toggle_task_actions(js \\ %JS{}, id) do
-    # FIXME: Fix this
+    # FIXME: Fix the transition not working correctly
     JS.toggle(js,
       to: "#task-actions-#{id}",
       in: {"transition-all ease-in-out duration-300", "opacity-0 h-0", "opacity-100 h-auto"},

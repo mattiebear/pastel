@@ -16,6 +16,11 @@ defmodule Pastel.Todo do
     |> Repo.insert()
   end
 
+  def get_task!(%User{} = _user, id) do
+    # TODO: Authorize user
+    Repo.get_by!(Task, id: id)
+  end
+
   def list_tasks(%User{} = user) do
     Repo.all(
       from t in Task,
@@ -25,6 +30,12 @@ defmodule Pastel.Todo do
         on: lu.list_id == l.id,
         where: lu.user_id == ^user.id
     )
+  end
+
+  def complete_task!(%Task{} = task) do
+    task
+    |> Changeset.change(%{completed_at: DateTime.utc_now() |> DateTime.truncate(:second)})
+    |> Repo.update!()
   end
 
   def init_user_list!(%User{} = user) do
