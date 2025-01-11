@@ -22,13 +22,18 @@ defmodule Pastel.Todo do
   end
 
   def list_tasks(%User{} = user) do
+    # Get the start of today in the user's timezone and then convert it to UTC
+    cutoff =
+      DateTime.now!(user.time_zone) |> Timex.beginning_of_day()
+
     Repo.all(
       from t in Task,
         join: l in List,
         on: t.list_id == l.id,
         join: lu in ListUser,
         on: lu.list_id == l.id,
-        where: lu.user_id == ^user.id
+        where: lu.user_id == ^user.id,
+        where: is_nil(t.completed_at) or t.completed_at > ^cutoff
     )
   end
 

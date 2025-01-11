@@ -71,6 +71,7 @@ defmodule PastelWeb.TasksLive do
               ]}>
                 {task.name}
               </h2>
+              <%!-- TODO: Show completed timestamp if completed --%>
               <div class="flex flex-row gap-x-2">
                 <div class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25">
                   <.icon class="size-4 mr-3" name="hero-calendar" />
@@ -89,7 +90,7 @@ defmodule PastelWeb.TasksLive do
             </button>
 
             <div id={"task-actions-#{task.id}"} class="hidden overflow-hidden mt-3">
-              <p :if={task.description && String.length(task.description > 0)}>{task.description}</p>
+              <p :if={task.description && String.length(task.description) > 0}>{task.description}</p>
 
               <div class="flex flex-row justify-end gap-x-2">
                 <%!-- <button class="size-8 rounded-full bg-blue-300">
