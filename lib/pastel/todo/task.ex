@@ -24,6 +24,8 @@ defmodule Pastel.Todo.Task do
   def changeset(task, attrs) do
     task
     |> cast(attrs, [:name, :description, :completed_at, :relative_due_on, :list_id])
+    |> trim(:name)
+    |> trim(:description)
     |> validate_required([:name])
     |> validate_length(:name, min: 1)
     |> foreign_key_constraint(:list_id)
@@ -34,6 +36,13 @@ defmodule Pastel.Todo.Task do
     |> changeset(attrs)
     |> put_due_on(attrs, user)
   end
+
+  defp trim(changeset, field) do
+    update_change(changeset, field, &normalize_string/1)
+  end
+
+  defp normalize_string(string) when is_binary(string), do: String.trim(string)
+  defp normalize_string(string) when is_nil(string), do: nil
 
   defp put_due_on(changeset, attrs, user) do
     today = DateTime.now!(user.time_zone) |> DateTime.to_date()

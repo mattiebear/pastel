@@ -89,6 +89,8 @@ defmodule PastelWeb.TasksLive do
             </button>
 
             <div id={"task-actions-#{task.id}"} class="hidden overflow-hidden mt-3">
+              <p :if={task.description && String.length(task.description > 0)}>{task.description}</p>
+
               <div class="flex flex-row justify-end gap-x-2">
                 <%!-- <button class="size-8 rounded-full bg-blue-300">
                   <.icon name="hero-paper-airplane" class="size-4" />
@@ -100,8 +102,9 @@ defmodule PastelWeb.TasksLive do
 
                 <button
                   class="size-8 rounded-full bg-blue-300"
-                  phx-click="complete_task"
-                  phx-value-id={task.id}
+                  phx-click={
+                    JS.push("complete_task", value: %{id: task.id}) |> toggle_task_actions(task.id)
+                  }
                 >
                   <.icon name="hero-check" class="size-4" />
                 </button>
