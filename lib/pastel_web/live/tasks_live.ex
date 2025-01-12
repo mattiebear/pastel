@@ -73,7 +73,10 @@ defmodule PastelWeb.TasksLive do
               </h2>
               <%!-- TODO: Show completed timestamp if completed --%>
               <div class="flex flex-row gap-x-2">
-                <div class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25">
+                <div
+                  :if={task.due_on}
+                  class="pl-3 pr-4 py-1.5 text-sm rounded-full flex flex-row items-center bg-gray-400/25"
+                >
                   <.icon class="size-4 mr-3" name="hero-calendar" />
                   <span class="text-sm">{PastelWeb.Date.format_short(task.due_on)}</span>
                 </div>
